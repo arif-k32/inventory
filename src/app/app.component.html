@@ -1,0 +1,21 @@
+
+
+<header class="flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white text-sm py-4 dark:bg-gray-800">
+  <nav class="max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between" aria-label="Global">
+    <a class="flex-none text-xl font-semibold dark:text-white" href="#">Inventory</a>
+    <div class="flex flex-row items-center gap-5 mt-5 pb-2 overflow-x-auto sm:justify-end sm:mt-0 sm:pl-5 sm:pb-0 sm:overflow-x-visible">
+      <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500" routerLinkActive="activePage" routerLink="home" [routerLinkActiveOptions]="{exact:true}">Home</a>
+      <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500" routerLinkActive="activePage" routerLink="login" [hidden]="this.isloggedinService.isloggedin">Login</a>
+      <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500" routerLinkActive="activePage" routerLink="register" [hidden]="this.isloggedinService.isloggedin">Register</a>
+      <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-gray-400 dark:hover:text-gray-500" routerLinkActive="activePage" routerLink="dashboard" [hidden]="!this.isloggedinService.isloggedin">Dashboard</a>
+      <button (click)="logout()"
+                class="mx-auto mt-2 py-1 px-1 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-indigo-500 text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">
+                    Logout
+                  </button>
+    </div>
+  </nav>
+</header>
+
+<div>
+  <router-outlet></router-outlet>
+</div>
