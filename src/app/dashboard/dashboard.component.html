@@ -7,6 +7,7 @@
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
               <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase bg-blue-300">Disable/Enable</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase bg-blue-300">Id</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase bg-blue-300">Product Name</th>
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium  uppercase bg-blue-300">Price</th>
@@ -14,8 +15,20 @@
                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium  uppercase bg-blue-300">Actions</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-              <tr *ngFor="let product of products">
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700" >
+              <tr *ngFor="let product of products" [ngClass]="{'rowinactive':inactiveRows.includes(product.id)}">
+
+
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">
+                  <input
+                      (change)="enabledisable(product.id, $event)"
+                      type="checkbox"
+                      [checked]="!inactiveRows.includes(product.id)"
+                      id="hs-basic-usage"
+                      class="relative w-[3.25rem] h-7 bg-gray-100 checked:bg-none checked:bg-blue-600 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 border border-transparent ring-1 ring-transparent focus:border-blue-600 focus:ring-blue-600 ring-offset-white focus:outline-none appearance-none dark:bg-gray-700 dark:checked:bg-blue-600 dark:focus:ring-offset-gray-800 before:inline-block before:w-6 before:h-6 before:bg-white checked:before:bg-blue-200 before:translate-x-0 checked:before:translate-x-full before:shadow before:rounded-full before:transform before:ring-0 before:transition before:ease-in-out before:duration-200 dark:before:bg-gray-400 dark:checked:before:bg-blue-200"/><label for="hs-basic-usage" class="sr-only">switch</label>
+                </td>
+
+
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">{{product.id}}</td>
                 
                 <ng-container *ngIf="!(editMode && product.id == editId); else nameedit">
@@ -30,9 +43,9 @@
                 </ng-template>
                 
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button class="text-blue-500 hover:text-blue-700 mr-3" (click)="updateProduct(product.id)" [hidden]="!(editMode && product.id == editId)">Save</button>
-                  <button class="text-blue-500 hover:text-blue-700 mr-3" (click)="editRow(product.id)" [hidden]="editMode  && product.id == editId">Edit</button>
-                  <button class="text-blue-500 hover:text-blue-700 mr-5" (click)="delete(product.id)">Delete</button>
+                  <button  [disabled]="inactiveRows.includes(product.id)" (click)="updateProduct(product.id)" [hidden]="!(editMode && product.id == editId)" class=" text-blue-500 hover:text-blue-700 mr-3 ">Save</button>
+                  <button  [disabled]="inactiveRows.includes(product.id)" (click)="editRow(product.id)" [hidden]="editMode  && product.id == editId" class="text-blue-500 hover:text-blue-700 mr-3 ">Edit</button>
+                  <button  [disabled]="inactiveRows.includes(product.id)" (click)="delete(product.id)" class="mx-auto mt-2 py-1 px-1 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-indigo-500 text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800" type="button">Delete</button>
                 </td>
               </tr>
   

@@ -16,6 +16,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { DashboardGuard } from './services/dashboard.guard';
 import { ProductsComponent } from './products/products.component';
 import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Dashboard2Component } from './dashboard2/dashboard2.component';
 const approute:Routes=[
   {
     path:'home',
@@ -33,8 +35,8 @@ const approute:Routes=[
   },
   {
     path:'dashboard',
-    component:DashboardComponent,
-    canActivate:[DashboardGuard]
+    component:Dashboard2Component,
+    // canActivate:[DashboardGuard]
   },
   {
     path:'register',
@@ -63,6 +65,7 @@ const approute:Routes=[
     PagenotfoundComponent,
     RegisterComponent,
     ProductsComponent,
+    Dashboard2Component
   ],
   imports: [
     BrowserModule,
@@ -71,8 +74,9 @@ const approute:Routes=[
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    ToastrModule.forRoot()
-
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -8,17 +8,31 @@ import { HttpServiceService } from '../services/http-service.service';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  public products!:any
+  products!:any
+
   editMode=false;
   editId!:string;
 
   editName!:string;
   editPrice!:string;
   editStock!:string;
+
+  inactiveRows:number[]=[];
+
+
   constructor(private http:HttpServiceService, private toastr:ToastrService){}
+
+  enabledisable(productid:number, event:any){
+    if(event.target.checked)
+      this.inactiveRows.splice(this.inactiveRows.indexOf(productid),1)
+    else
+      this.inactiveRows.push(productid)
+    console.log(this.inactiveRows)
+  }
 
   delete(id:number){
     this.http.deleteProduct(id).subscribe(respose=>{
+      console.log(respose, this.inactiveRows)
       this.getdata();
     })  
   }
@@ -30,9 +44,7 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {
-    this.getdata();
-  }
+  
   editRow(id:string){
     for (let product of this.products){
       if(product.id == id){
@@ -68,6 +80,11 @@ export class DashboardComponent implements OnInit {
       positionClass:'toast-bottom-right',
       closeButton:true
     })
+  }
+
+  ngOnInit(): void {
+    this.getdata();
+    console.log(this.inactiveRows)
   }
   
 }
