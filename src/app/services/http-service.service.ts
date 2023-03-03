@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class HttpServiceService {
-  url:string='https://63c61f6bdcdc478e15bb91a4.mockapi.io'
+  url:string='https://api-sales-app.josetovar.dev'
   constructor(private http:HttpClient, private router:Router) { }
   getSingleProduct(id:number){
     return this.http.get(`${this.url}/products/${id}`)
@@ -16,8 +16,8 @@ export class HttpServiceService {
   deleteProduct(id:number){
     return this.http.delete(`${this.url}/products/${id}`)
   }
-  getdata(database:string){
-    return this.http.get(`${this.url}/${database}`);
+  login(loginform:FormGroup){
+    return this.http.post(`${this.url}/login`, loginform.value);
   }
 
   registerUser(registerform:FormGroup){

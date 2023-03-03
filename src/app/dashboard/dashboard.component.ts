@@ -39,9 +39,9 @@ export class DashboardComponent implements OnInit {
 
 
   getdata(){
-    this.http.getdata('products').subscribe(response=>{
-      this.products=response;
-    })
+    // this.http.getdata('products').subscribe(response=>{
+    //   this.products=response;
+    // })
   }
 
   

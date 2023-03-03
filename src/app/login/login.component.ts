@@ -23,13 +23,13 @@ export class LoginComponent {
  
   login(){
     let users:any[];
-    this.http.getdata('users').subscribe((response:any)=>{
-      for (let user of response){
-        if(user.email == this.loginform.value.email && user.password == this.loginform.value.password){
-            this.isloggedinService.isloggedin=true;
-            this.router.navigate(['dashboard']);
-        }
-      }
-    })
+    this.http.login(this.loginform).subscribe((response:any)=>{
+      console.log(response)
+        // if(user.email == this.loginform.value.email && user.password == this.loginform.value.password){
+        //     this.isloggedinService.isloggedin=true;
+        //     this.router.navigate(['dashboard']);
+        // }
+      })
+    
   }
 }

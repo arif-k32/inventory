@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { HttpServiceService } from '../services/http-service.service';
 import { formatCurrency, getCurrencySymbol } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard2',
@@ -19,7 +20,7 @@ export class Dashboard2Component implements OnInit {
   productsForm:FormGroup = new FormGroup ({});
 
 
-  constructor(private http:HttpServiceService, private toastr:ToastrService){}
+  constructor(private http:HttpServiceService, private toastr:ToastrService, private htprq:HttpClient){}
 
 
   switch(product:any, checkbox:any){
@@ -48,7 +49,7 @@ export class Dashboard2Component implements OnInit {
 
 
   getdata(){
-    this.productsObservable$= this.http.getdata('products')
+    // this.productsObservable$= this.http.getdata('products')
     
     this.productsObservable$.subscribe((resp:any)=>{
       resp.map((product:any)=>{
@@ -78,7 +79,6 @@ export class Dashboard2Component implements OnInit {
                                 stock:this.productsForm.controls[product.id].value.stock
                               }
 
-      console.log(updatedProduct)
        
 
 
@@ -120,9 +120,13 @@ export class Dashboard2Component implements OnInit {
     return true;
     
   }
-
+   a = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFAay5jb20iLCJ1c2VyX2lkIjozLCJleHAiOjE2Nzc4NDM3Mzh9.CSIZXKH4ILbTSkQgUwZRQpY1vNWUpa2-FRHpQUdaMiA'
   ngOnInit(): void {
-    this.getdata();
+    // this.getdata();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${encodeURIComponent(this.a)}`)
+    this.htprq.get('https://api-sales-app.josetovar.dev/products',{headers}).subscribe(res=>{
+      console.log(res)
+    })
   }
   
 }
