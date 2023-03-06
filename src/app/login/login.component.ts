@@ -3,6 +3,7 @@ import{ FormGroup, FormControl,  Validators} from '@angular/forms'
 import { Router } from '@angular/router';
 import { HttpServiceService } from '../services/http-service.service';
 import { IsloggedinService } from '../services/isloggedin.service';
+import { TokenstorageService } from '../services/tokenstorage.service';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +11,7 @@ import { IsloggedinService } from '../services/isloggedin.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  constructor(private router:Router,private http:HttpServiceService,private isloggedinService:IsloggedinService){}
+  constructor(private router:Router,private http:HttpServiceService,private isloggedinService:IsloggedinService, private tokenStorage:TokenstorageService){}
   
   loginform = new FormGroup({
       email:new FormControl('',[ Validators.required]),
@@ -24,12 +25,11 @@ export class LoginComponent {
   login(){
     let users:any[];
     this.http.login(this.loginform).subscribe((response:any)=>{
-      console.log(response)
-        // if(user.email == this.loginform.value.email && user.password == this.loginform.value.password){
-        //     this.isloggedinService.isloggedin=true;
-        //     this.router.navigate(['dashboard']);
-        // }
-      })
+                console.log(response)
+                this.tokenStorage.accessToken=response.access_token;
+                localStorage.setItem('access_token',JSON.stringify(response.access_token))
+                this.router.navigate(['dashboard']);
+          })
     
   }
 }

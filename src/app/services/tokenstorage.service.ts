@@ -4,6 +4,5 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class TokenstorageService {
-
-  constructor(public accessToken:string='') { }
+  public accessToken:string='';
 }

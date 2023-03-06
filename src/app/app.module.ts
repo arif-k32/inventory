@@ -12,12 +12,13 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms'
 import { RegisterComponent } from './register/register.component';
 import { LoginGuard } from './services/login.guard';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DashboardGuard } from './services/dashboard.guard';
 import { ProductsComponent } from './products/products.component';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Dashboard2Component } from './dashboard2/dashboard2.component';
+import {  TokenInterceptor } from './services/token.interceptor';
 const approute:Routes=[
   {
     path:'home',
@@ -78,7 +79,7 @@ const approute:Routes=[
     BrowserAnimationsModule
     
   ],
-  providers: [],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

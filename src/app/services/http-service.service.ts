@@ -24,7 +24,12 @@ export class HttpServiceService {
     return this.http.post(`${this.url}/users`, registerform.value)
   }
   updateProduct(id:string,details:any){
-    return this.http.put(`${this.url}/products/${id}`,details)
+    return this.http.put(`${this.url}/products`,details)
   }
-  
+  getProducts(){
+    return this.http.get(`${this.url}/products`)
+  }
+  updateProductActive(id:number, state:boolean){
+    this.http.put(`${this.url}/product-status/${id}?status=${state}`,{}).subscribe();
+  }
 }
