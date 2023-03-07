@@ -32,4 +32,7 @@ export class HttpServiceService {
   updateProductActive(id:number, state:boolean){
     this.http.put(`${this.url}/product-status/${id}?status=${state}`,{}).subscribe();
   }
+  createProduct(product:any){
+    return this.http.post(`${this.url}/products`,product);
+  }
 }

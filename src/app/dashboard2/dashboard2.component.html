@@ -1,57 +1,70 @@
 <div class="background-image" style="width: 1200px;">
+  <br>
 
-    <div class="flex flex-col">
+   <div style="display: flex;flex-direction: row;justify-content: space-between;">
+      <div>
+        <select 
+            (change)="setfiltersActive($event)"
+            class=" py-3 px-4 pr-9 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-white">
+                <option value="">All</option>
+                <option value="true">Active Products</option>
+                <option value="false">Inactive Products</option>
+        </select>
+      </div>
+
+      <div>
+        <select 
+            (change)="setfiltersStock($event)"
+            class=" py-3 px-4 pr-9 block w-full border-gray-200 rounded-full text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-white">
+                <option value="">All Stock</option>
+                <option value="1">In Stock</option>
+                <option value="0">Out of Stock</option>
+        </select>
+      </div>
+  </div>
+  <hr>
+  <br>
+  <div style="display: flex;flex-direction: column;" class="bg-blue-200">
+    <div class="mb-3 p-2 bg-gray-800 text-white" style=" width: 100%;text-align: center;">
+        <h2>Add Product</h2>
+    </div>
+    <div>
+      <form [formGroup]="newproduct" (submit)="newproductf()" style="display: flex; flex-direction: row;justify-content: space-between;" class="mb-3">
+        <div>
+            <label for="name" class="block text-sm font-medium mb-2 dark:text-black">Name</label>
+            <input formControlName="name" type="text" id="name" class="py-3 px-4 block  border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="product name">
+        </div>
+        <div>
+          <label for="price" class="block text-sm font-medium mb-2 dark:text-black">Price</label>
+          <input formControlName="price" type="number" id="price" class="py-3 px-4 block  border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="price">
+        </div>
+        <div>
+          <label for="sku" class="block text-sm font-medium mb-2 dark:text-black">Sku</label>
+          <input formControlName="sku" type="text" id="sku" class="py-3 px-4 block  border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="sku">
+        </div>
+        <div>
+          <label for="stock" class="block text-sm font-medium mb-2 dark:text-black">Stock</label>
+          <input formControlName="stock" type="number" id="stock" class="py-3 px-4 block  border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400" placeholder="stock">
+        </div>
+        <div >
+            <label for="active" class="block text-sm font-medium mb-2 dark:text-black">Active</label>
+            <input type="checkbox" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="active">
+        </div>
+        <div>
+            <button type="submit" class="mt-5 py-1 px-2 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-gray-800 text-white hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2 transition-all text-sm dark:focus:ring-gray-900 dark:focus:ring-offset-gray-800">Send</button>
+        </div>
+      </form>
+    </div>
+    
+  </div>
+  
+
+    <div class="flex flex-col ">
       <div class="-m-1.5 overflow-x-auto">
         <div class="p-1.5 min-w-full inline-block align-middle">
           <div class="overflow-hidden">
             
-                <!-- <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead>
-                      <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase bg-blue-300">Disable/Enable</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase bg-blue-300">Id</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase bg-blue-300">Product Name</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium  uppercase bg-blue-300">Price</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium  uppercase bg-blue-300">Stock</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium  uppercase bg-blue-300">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700" >
-                      <tr *ngFor="let product of products" [ngClass]="{'rowinactive':inactiveRows.includes(product.id)}" >
-        
-        
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">
-                          <input
-                              (change)="enabledisable(product.id, $event)"
-                              type="checkbox"
-                              [checked]="!inactiveRows.includes(product.id)"
-                              id="hs-basic-usage"
-                              class="relative w-[3.25rem] h-7 bg-gray-100 checked:bg-none checked:bg-blue-600 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 border border-transparent ring-1 ring-transparent focus:border-blue-600 focus:ring-blue-600 ring-offset-white focus:outline-none appearance-none dark:bg-gray-700 dark:checked:bg-blue-600 dark:focus:ring-offset-gray-800 before:inline-block before:w-6 before:h-6 before:bg-white checked:before:bg-blue-200 before:translate-x-0 checked:before:translate-x-full before:shadow before:rounded-full before:transform before:ring-0 before:transition before:ease-in-out before:duration-200 dark:before:bg-gray-400 dark:checked:before:bg-blue-200"/><label for="hs-basic-usage" class="sr-only">switch</label>
-                        </td>
-        
-        
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">{{product.id}}</td>
-                        
-                        <ng-container *ngIf="!(editMode && product.id == editId); else nameedit">
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">{{product.name}}</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">{{product.price | currency:"USD"}}</td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ">{{product.stock}}</td>
-                        </ng-container>
-                        <ng-template #nameedit>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium "><input type="text" [(ngModel)]="editName"></td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium "><input type="number" [(ngModel)]="editPrice"></td>
-                          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium "><input type="number" [(ngModel)]="editStock"></td>
-                        </ng-template>
-                        
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button  [disabled]="inactiveRows.includes(product.id)" (click)="updateProduct(product.id)" [hidden]="!(editMode && product.id == editId)" class=" text-blue-500 hover:text-blue-700 mr-3 ">Save</button>
-                          <button  [disabled]="inactiveRows.includes(product.id)" (click)="editRow(product.id)" [hidden]="editMode  && product.id == editId" class="text-blue-500 hover:text-blue-700 mr-3 ">Edit</button>
-                          <button  [disabled]="inactiveRows.includes(product.id)" (click)="delete(product.id)" class="mx-auto mt-2 py-1 px-1 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-indigo-500 text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800" type="button">Delete</button>
-                        </td>
-                      </tr>
-          
-                    </tbody>
-                  </table> -->
+                
                 <form [formGroup]="productsForm">
                   <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
@@ -90,13 +103,16 @@
                           <button   
                               [disabled]="!productsForm.controls[product.id].value.switch" 
                               
-                              (click)="delete(product.id)" type="button"class="py-2 mr-2 px-3 inline-flex justify-center disabled:bg-slate-400 disabled:cursor-not-allowed items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Delete</button>
+                              (click)="delete(product.id)" type="button" class="py-2 mr-2 px-3 inline-flex justify-center disabled:bg-slate-400 disabled:cursor-not-allowed items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">Delete</button>
                         </td>
                       </tr>
           
                     </tbody>
                   </table>
+                  <br>
+                  <br>
             </form>
+            
             
           </div>
         </div>

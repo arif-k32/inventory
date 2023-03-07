@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { HttpServiceService } from '../services/http-service.service';
-import { formatCurrency, getCurrencySymbol } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { formatCurrency } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { map, of } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard2',
@@ -13,14 +14,77 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class Dashboard2Component implements OnInit {
   productsObservable$!:any;
 
-  editMode=false;
-  editId!:string;
+  
 
 
   productsForm:FormGroup = new FormGroup ({});
+  newproduct:FormGroup = new FormGroup ({
+        name: new FormControl ('', Validators.required),
+        price: new FormControl ('',[Validators.required, Validators.min(0)]),
+        stock: new FormControl('',[Validators.required, Validators.min(0)]),
+        sku:new FormControl('',Validators.required),
+        active: new FormControl(false,Validators.required)
+  })
 
+
+  filterFn:Function[]=[
+       
+        (products:any)=>{    ///filter by active
+              let filteredProducts:any[]=[]
+              if(this.filters[this.active])
+                filteredProducts=products.filter((product:any)=>product.active.toString() === this.filters[this.active]);
+              else
+                filteredProducts=products;
+              return filteredProducts;
+        },
+
+        (products:any)=>{     ///filter by stock
+              let filteredProducts:any[]=[];
+              if(this.filters[this.stock])
+                  if(this.filters[this.stock] =='0')
+                    filteredProducts=products.filter((product:any)=> product.stock == 0)
+                  else
+                    filteredProducts = products.filter((product:any)=> product.stock > 0)
+              else
+                filteredProducts=products;
+              return filteredProducts;
+        },
+  ]
+
+    
+  
+  filters=['','']
+  active=0;
+  stock=1;
 
   constructor(private http:HttpServiceService, private toastr:ToastrService, private htprq:HttpClient){}
+
+  setfiltersActive(activeDropdown:any){
+    this.filters[this.active]=activeDropdown.target.value;
+    this.getdata();
+  }
+  setfiltersStock(stockDropdown:any){
+    this.filters[this.stock]=stockDropdown.target.value;
+    this.getdata();
+  }
+
+  newproductf(){
+    console.log(this.newproduct.valid)
+    if(this.newproduct.valid)
+            this.http.createProduct(this.newproduct.value).subscribe((res)=>{
+                                  this.newproduct.reset();
+                                  this.newproduct.get('active')?.setValue(false)
+                                  this.getdata();
+                                })
+    else
+        this.toastr.error(`Product not valid`,'error',{
+                      timeOut:3000,
+                      progressBar:true,
+                      progressAnimation:'decreasing',
+                      positionClass:'toast-bottom-right',
+                      closeButton:true
+                    })
+  }
 
 
   switch(product:any, checkbox:any){
@@ -45,56 +109,58 @@ export class Dashboard2Component implements OnInit {
 
   delete(id:number){
     this.http.deleteProduct(id).subscribe(respose=>{
-      console.log(respose)
-      this.showtoast('deleted')
-      this.getdata();
-    })  
+            this.showtoast('deleted')
+            this.http.getProducts().subscribe((response:any)=>{
+              this.productsObservable$=of(response)
+            })
+          })  
   }
-
 
   getdata(){
-    this.productsObservable$= this.http.getProducts();
-    
+    this.productsObservable$= this.http.getProducts().pipe(map((products:any)=>{ return this.checkfilters(products)}));
     this.productsObservable$.subscribe((resp:any)=>{
-      resp.map((product:any)=>{
-          this.productsForm.addControl(
-            `${product.id}`, new FormGroup ({
-                switch: new FormControl(product.active),
-                price :new FormControl({value:this.getCurrencyFromNumber(product.price), disabled:!product.active},Validators.min(0)),
-                stock : new FormControl({value:product.stock, disabled:!product.active},Validators.min(0))
-            })
-          )
-      })
-      
-      
-    })
-    
+                            resp.map((product:any)=>{
+                                this.productsForm.addControl(
+                                  `${product.id}`, new FormGroup ({
+                                      switch: new FormControl(product.active),
+                                      price :new FormControl({value:this.getCurrencyFromNumber(product.price), disabled:!product.active},Validators.min(0)),
+                                      stock : new FormControl({value:product.stock, disabled:!product.active},Validators.min(0))
+                                  })
+                                )
+                            })
+                          })
   }
 
-  
- 
+  checkfilters(products:any){
+    for(const filter of this.filterFn)
+      products=filter(products)
+    return products;
+  }
+
 
   updateProduct(product:any){
       const updatedProduct = {
-                                ...product,
-                                price:this.getNumberFromText(this.productsForm.controls[product.id].value.price),
-                                stock:this.productsForm.controls[product.id].value.stock
-                              }
+                          ...product,
+                          price:this.getNumberFromText(this.productsForm.controls[product.id].value.price),
+                          stock:this.productsForm.controls[product.id].value.stock
+                        }
+
+
       this.http.updateProduct(product.id,updatedProduct).subscribe(response=>{
-        this.editMode=false;
-        this.editId='';
-        this.showtoast('update success');
-        this.getdata();
-    });
+                                  this.showtoast('update success');
+                                  this.getdata();
+                              });
   }
+
+
   showtoast(message:string){
-    this.toastr.success(`${message}`,'success',{
-      timeOut:3000,
-      progressBar:true,
-      progressAnimation:'decreasing',
-      positionClass:'toast-bottom-right',
-      closeButton:true
-    })
+        this.toastr.success(`${message}`,'success',{
+                  timeOut:3000,
+                  progressBar:true,
+                  progressAnimation:'decreasing',
+                  positionClass:'toast-bottom-right',
+                  closeButton:true
+                })
   }
 
   getNumberFromText(text:string){
@@ -120,9 +186,8 @@ export class Dashboard2Component implements OnInit {
     
   }
   ngOnInit(): void {
+
+    
     this.getdata();
-    
-    
   }
-  
 }

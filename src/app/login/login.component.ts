@@ -25,7 +25,6 @@ export class LoginComponent {
   login(){
     let users:any[];
     this.http.login(this.loginform).subscribe((response:any)=>{
-                console.log(response)
                 this.tokenStorage.accessToken=response.access_token;
                 localStorage.setItem('access_token',JSON.stringify(response.access_token))
                 this.router.navigate(['dashboard']);
